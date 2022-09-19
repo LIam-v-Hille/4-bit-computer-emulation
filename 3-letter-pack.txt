@@ -1,4 +1,4 @@
-Copy and paste the below into 4bit.py to be able to use 3 letter words like in assembly instead of hex or binary
+Copy and paste the below into 4bit.py to be able to use 3 letter words like in assembly instead of hex or binary, use this if you slightly value your sanity
 
 div = 0x0
 add = 0x1
