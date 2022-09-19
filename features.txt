@@ -1,0 +1,70 @@
+4 - bit * 2 buses DATA and ADDR
+
+registers
+
+0 - instruction set - INS - ROM
+1 - current instruction - CIR - RAM
+2 - accumulator - ACC - RAM
+3 - Program memory - PRM - RAM
+4 - Program - PRO - ROM - Instructions
+5 - output - OUT - RAM 
+
+16 Instructions
+
+0000 - 0 
+0001 - 1
+0010 - 2
+0011 - 3
+0100 - 4
+0101 - 5
+0110 - 6
+0111 - 7
+1000 - 8
+1001 - 9
+1010 - A
+1011 - B
+1100 - C
+1101 - D
+1110 - E
+1111 - F
+
+0x - instruction set
+
+0x0 - sta - start program
+0x1 - add - add the data of an address to ACC
+0x2 - sub - subtract the data of an address from ACC
+0x3 - mov - move the data of PRM_1 to PRM_2
+0x4 - lda - load the data of an address into ACC
+0x5 - wrt - write ACC to an address in PRM
+0x6 - out - write an address in PRM to OUT
+...
+0xF - stp - stop program
+TBC
+
+EXAMPLE
+# add PRM 1 and PRM 2 save to PRM 3
+PRO = {
+    0   sta # start the program
+    4   lda # load the next nibble into ACC
+    1   3x1 # 3x1 = 1, ACC = 1
+    1   add # add the next nibble to ACC
+    2   3x2 # 3x2 = 10, ACC = 1 + 10 = 11 = B
+    5   wrt # write ACC to the next address
+    3   3x3 # write B to 3x3
+    F   stp # stop the program
+    0
+    0
+    0
+    0
+    0   NULL
+    0
+    0
+    0
+}
+PRM = {
+    1
+    A
+    0
+    ...
+    0
+}
