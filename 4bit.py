@@ -4,7 +4,9 @@ global OUT
 global PRM
 global PRO
 global PRC
+global INP
 ACC = 0b0000
+INP = 0b0000
 CIR = 0b0000
 PRC = 0b0000
 OUT = 0b0000
@@ -19,6 +21,7 @@ def instruction_set(instruction:bin, position:int, verbose:bool):
     global PRM
     global PRO
     global PRC
+    global INP
     '''
         0x0 - div - divide ACC by the data of an address
         0x1 - add - add the data of an address to ACC
@@ -33,8 +36,15 @@ def instruction_set(instruction:bin, position:int, verbose:bool):
         0xA - cmp - compare the data of an address with the data of ACC
         0xB - ift - execute the instruction 2 infront of it if the address 1 infront of it is >=1
         0xC - wro - print the OUT register
-
+        0xD - inp - get user input and write it to the INP register
+        0xE - wrg - write any register (according to the following nibble) to an address in PRM
         0xF - stp - stop program and print OUT
+
+        register key
+        0x0 - ACC 
+        0x1 - CIR
+        0x2 - OUT
+        0x3 - INP    
     '''
     i = instruction
     if i == 0b0000: # div
@@ -47,6 +57,12 @@ def instruction_set(instruction:bin, position:int, verbose:bool):
         ACC += PRM[PRO[PRC+1]]
         if verbose: print(f"ADD {PRM[PRO[PRC+1]]}")
         return position + 2
+
+    elif i == 0x3: # mov
+        PRM[PRO[PRC+2]] = PRM[PRO[PRC+1]]
+        PRM[PRO[PRC+1]] = 0 
+        if verbose: print(f"MOV {PRM[PRO[PRC+1]]} {PRM[PRO[PRC+2]]}")
+        return position + 3
 
     elif i == 0b0010: # sub
         ACC -= PRM[PRO[PRC+1]]
@@ -101,6 +117,23 @@ def instruction_set(instruction:bin, position:int, verbose:bool):
     elif i == 0xC: # wro
         print(OUT)
         return position + 1
+
+    elif i == 0xD: # inp
+        INP = bin(input("awaiting user input: \n"))
+        if verbose: print(f"INP {INP}")
+        return position + 1
+
+    elif i == 0xE: # wrg
+        j = PRO[PRC+1]
+        if j == 0x0:    # ACC
+            PRM[PRO[PRC+2]] = ACC
+        if j == 0x1:    # CIR 
+            PRM[PRO[PRC+2]] = CIR
+        if j == 0x2:    # OUT 
+            PRM[PRO[PRC+2]] = OUT
+        if j == 0x3:    # INP 
+            PRM[PRO[PRC+2]] = INP
+        return position + 3
 
     elif i == 0b1111: # stp
         if verbose: print("STP")
