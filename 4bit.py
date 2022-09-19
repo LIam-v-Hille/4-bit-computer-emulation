@@ -9,8 +9,8 @@ CIR = 0b0000
 PRC = 0b0000
 OUT = 0b0000
 # write your own program here or copy one from programs.txt
-PRM = []
-PRO = []
+PRM = [0xA, 0x1, 0x1, 0x3, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]
+PRO = [0x4,0x0,0x6, 0x0, 0xC, 0xA, 0x3,0x5, 0x2 ,0xB, 0x2, 0xF, 0x4, 0x0, 0x2, 0x1, 0x5, 0x0, 0x7]
 
 def instruction_set(instruction:bin, position:int, verbose:bool):
     global ACC
@@ -20,7 +20,7 @@ def instruction_set(instruction:bin, position:int, verbose:bool):
     global PRO
     global PRC
     '''
-        0x0 - sta - start program
+        0x0 - div - divide ACC by the data of an address
         0x1 - add - add the data of an address to ACC
         0x2 - sub - subtract the data of an address from ACC
         0x3 - mov - move the data of PRM_1 to PRM_2
@@ -29,12 +29,18 @@ def instruction_set(instruction:bin, position:int, verbose:bool):
         0x6 - out - write an address in PRM to OUT
         0x7 - jmp - jump to an address on PRO speciefied by CIR
         0x8 - ldc - load the data of an address into CIR
-        ...
-        0xF - stp - stop program
+        0x9 - mlt - multiply the ACC by the data of an address
+        0xA - cmp - compare the data of an address with the data of ACC
+        0xB - ift - execute the instruction 2 infront of it if the address 1 infront of it is >=1
+        0xC - wro - print the OUT register
+
+        0xF - stp - stop program and print OUT
     '''
     i = instruction
-    if i == 0b0000: # sta
-        return position + 1
+    if i == 0b0000: # div
+        ACC /= PRM[PRO[PRC+1]]
+        if verbose: print(f"DIV {PRM[PRO[PRC+1]]}")
+        return position + 2
         
 
     elif i == 0b0001: # add
@@ -70,6 +76,31 @@ def instruction_set(instruction:bin, position:int, verbose:bool):
         CIR = PRM[PRO[PRC+1]]
         if verbose: print(f"LDC {PRM[PRO[PRC+1]]}")
         return position + 2
+    
+    elif i == 0x09: # mlt
+        ACC *= PRM[PRO[PRC+1]]
+        if verbose: print(f"MLT {PRM[PRO[PRC+1]]}")
+        return position + 2
+
+    elif i == 0xA: # cmp
+        if PRM[PRO[PRC+1]] == ACC:
+            ACC = 1
+        else:
+            ACC = 0
+        if verbose: print(f"CMP {PRM[PRO[PRC+1]]} {ACC == 1}")
+        return position + 2
+
+    elif i == 0xB: # ift
+        if PRM[PRO[PRC+1]]:
+            if verbose: print(f"IFT {PRM[PRO[PRC+1]]} TRUE")
+            return position + 2
+        else:
+            if verbose: print(f"IFT {PRM[PRO[PRC+1]]} FALSE")
+            return position + 3
+
+    elif i == 0xC: # wro
+        print(OUT)
+        return position + 1
 
     elif i == 0b1111: # stp
         if verbose: print("STP")
