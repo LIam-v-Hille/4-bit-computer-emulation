@@ -6,12 +6,12 @@ global PRO
 global PC
 ACC = 0b0000
 CIR = 0b0000
-PC = 0b0001
+PC = 0b0000
 OUT = 0b0000
-PRM = [0b0001, 0b0010, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000] # 4-bit RAM, 4-bit ADDRS BUS
-PRO = [0b0000, 0b0100, 0b0000, 0b0001, 0b0001, 0b0101, 0b0010, 0b0110, 0b0010, 0b1111, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000, 0b0000] # program
 
-def instruction_set(instruction:bin, next_instruction:bin, position:int):
+
+
+def instruction_set(instruction:bin, position:int):
     global ACC
     global CIR
     global OUT
@@ -26,37 +26,52 @@ def instruction_set(instruction:bin, next_instruction:bin, position:int):
         0x4 - lda - load the data of an address into ACC
         0x5 - wrt - write ACC to an address in PRM
         0x6 - out - write an address in PRM to OUT
+        0x7 - jmp - jump to an address on PRO speciefied by CIR
+        0x8 - ldc - load the data of an address into CIR
         ...
         0xF - stp - stop program
     '''
     i = instruction
-    inp = next_instruction
     if i == 0b0000: # sta
-        PC = 0b0000 # start listening
-        pass
+        return position + 1
+        
 
     elif i == 0b0001: # add
-        ACC += PRM[inp]
-        return 0b0010
+        ACC += PRM[PRO[PC+1]]
+        print(f"ADD {PRM[PRO[PC+1]]}")
+        return position + 2
 
     elif i == 0b0010: # sub
-        ACC -= PRM[inp]
-        return 0b0010
+        ACC -= PRM[PRO[PC+1]]
+        return position + 2
 
     elif i == 0b0100: # lda
-        ACC = PRM[inp]
-        return 0b0010
+        ACC = PRM[PRO[PC+1]]
+        print(f"LDA {PRM[PRO[PC+1]]}")
+        return position + 2
 
     elif i == 0b0101: # wrt
-        PRM[inp] = ACC
-        return 0b0010
+        PRM[PRO[PC+1]] = ACC
+        print(f"WRT {ACC}")
+        return position + 2
 
     elif i == 0b0110: # out
-        OUT = PRM[inp]
-        return 0b0010
+        OUT = PRM[PRO[PC+1]]
+        print(f"OUT {PRM[PRO[PC+1]]}")
+        return position + 2
+
+    elif i == 0x07: # jmp
+        print(f"JMP {CIR}")
+        return CIR
+    
+    elif i == 0x08: # ldc
+        CIR = PRM[PRO[PC+1]]
+        print("LDC")
+        return position + 2
 
     elif i == 0b1111: # stp
-        return 0b0001
+        print("STP")
+        return -1
 
 def run_program():
     global ACC
@@ -66,18 +81,14 @@ def run_program():
     global PRO
     global PC
 
-    instruction_set(PRO[0],0,0) # check first instruction for start
-    for entry in range(len(PRO)):
-
-        if PC == 0b0010: # check if current entry is an input
-            PC = 0b0000
-            continue
-
-        if PC == 0b0001:
+    while 1:
+        if PC == -1:
             print(OUT)
             break
+        PC = instruction_set(PRO[PC],PC)
+        #print(PC)
 
-        PC = instruction_set(PRO[entry],PRO[entry+1],entry)
+
 
     
 

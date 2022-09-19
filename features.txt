@@ -37,6 +37,7 @@ registers
 0x4 - lda - load the data of an address into ACC
 0x5 - wrt - write ACC to an address in PRM
 0x6 - out - write an address in PRM to OUT
+0x7 - jmp - jump to an address on PRO specified by CIR
 ...
 0xF - stp - stop program
 TBC
