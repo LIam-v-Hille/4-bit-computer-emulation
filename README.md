@@ -5,7 +5,7 @@ This project simulates a basic 4 bit computer.
 ---
 The computer has a few instructions being:
 ```
-0x0 - sta - start program
+0x0 - div - divide ACC by the data of an address
 
 0x1 - add - add the data of an address to ACC
 
@@ -22,6 +22,14 @@ The computer has a few instructions being:
 0x7 - jmp - jump to an address on PRO specified by CIR
 
 0x8 - ldc - load the data of an address into CIR
+
+0x9 - mlt - multiply the ACC by the data of an address
+
+0xA - cmp - compare the data of an address with the data of ACC
+
+0xB - ift - execute the instruction 2 infront of it if the address 1 infront of it is >=1
+
+0xC - wro - print the OUT register
 
 0xF - stp - stop program
 ```

@@ -1,0 +1,16 @@
+Copy and paste the below into 4bit.py to be able to use 3 letter words like in assembly instead of hex or binary
+
+div = 0x0
+add = 0x1
+sub = 0x2
+mov = 0x3
+lda = 0x4
+wrt = 0x5
+out = 0x6
+jmp = 0x7
+ldc = 0x8
+mlt = 0x9
+cmp = 0xA
+ift = 0xB
+wro = 0xC
+stp = 0xF
