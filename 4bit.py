@@ -3,10 +3,10 @@ global CIR
 global OUT
 global PRM
 global PRO
-global PC
+global PRC
 ACC = 0b0000
 CIR = 0b0000
-PC = 0b0000
+PRC = 0b0000
 OUT = 0b0000
 
 
@@ -17,7 +17,7 @@ def instruction_set(instruction:bin, position:int):
     global OUT
     global PRM
     global PRO
-    global PC
+    global PRC
     '''
         0x0 - sta - start program
         0x1 - add - add the data of an address to ACC
@@ -37,27 +37,27 @@ def instruction_set(instruction:bin, position:int):
         
 
     elif i == 0b0001: # add
-        ACC += PRM[PRO[PC+1]]
-        print(f"ADD {PRM[PRO[PC+1]]}")
+        ACC += PRM[PRO[PRC+1]]
+        print(f"ADD {PRM[PRO[PRC+1]]}")
         return position + 2
 
     elif i == 0b0010: # sub
-        ACC -= PRM[PRO[PC+1]]
+        ACC -= PRM[PRO[PRC+1]]
         return position + 2
 
     elif i == 0b0100: # lda
-        ACC = PRM[PRO[PC+1]]
-        print(f"LDA {PRM[PRO[PC+1]]}")
+        ACC = PRM[PRO[PRC+1]]
+        print(f"LDA {PRM[PRO[PRC+1]]}")
         return position + 2
 
     elif i == 0b0101: # wrt
-        PRM[PRO[PC+1]] = ACC
+        PRM[PRO[PRC+1]] = ACC
         print(f"WRT {ACC}")
         return position + 2
 
     elif i == 0b0110: # out
-        OUT = PRM[PRO[PC+1]]
-        print(f"OUT {PRM[PRO[PC+1]]}")
+        OUT = PRM[PRO[PRC+1]]
+        print(f"OUT {PRM[PRO[PRC+1]]}")
         return position + 2
 
     elif i == 0x07: # jmp
@@ -65,7 +65,7 @@ def instruction_set(instruction:bin, position:int):
         return CIR
     
     elif i == 0x08: # ldc
-        CIR = PRM[PRO[PC+1]]
+        CIR = PRM[PRO[PRC+1]]
         print("LDC")
         return position + 2
 
@@ -79,13 +79,13 @@ def run_program():
     global OUT
     global PRM
     global PRO
-    global PC
+    global PRC
 
     while 1:
-        if PC == -1:
+        if PRC == -1:
             print(OUT)
             break
-        PC = instruction_set(PRO[PC],PC)
+        PRC = instruction_set(PRO[PRC],PRC)
         #print(PC)
 
 

@@ -28,9 +28,10 @@ The computer has a few instructions being:
 The computer also has a few registers being:
 
 ```
+PRC - program counter, used by PRO to execute commands
 CIR - 4-bit INT
 ACC - 4-bit INT used for calculations
 OUT - 4 bit INT always printed at the termination of a program
-PRM - 16 addresses of 4-bit INTs, general purpose RAM
-PRO - 16 addresses of 4-bit INTs, program space (ROM)
+PRM - 16 addresses of 4-bit INTs (addresses can be incresed if you increase the bit count), general purpose RAM
+PRO - 16 addresses of 4-bit INTs (addresses can be incresed if you increase the bit count), program space (ROM)
 ```
