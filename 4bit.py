@@ -8,10 +8,11 @@ ACC = 0b0000
 CIR = 0b0000
 PRC = 0b0000
 OUT = 0b0000
+# write your own program here or copy one from programs.txt
+PRM = []
+PRO = []
 
-
-
-def instruction_set(instruction:bin, position:int):
+def instruction_set(instruction:bin, position:int, verbose:bool):
     global ACC
     global CIR
     global OUT
@@ -38,42 +39,43 @@ def instruction_set(instruction:bin, position:int):
 
     elif i == 0b0001: # add
         ACC += PRM[PRO[PRC+1]]
-        print(f"ADD {PRM[PRO[PRC+1]]}")
+        if verbose: print(f"ADD {PRM[PRO[PRC+1]]}")
         return position + 2
 
     elif i == 0b0010: # sub
         ACC -= PRM[PRO[PRC+1]]
+        if verbose: print(f"SUB {PRM[PRO[PRC+1]]}")
         return position + 2
 
     elif i == 0b0100: # lda
         ACC = PRM[PRO[PRC+1]]
-        print(f"LDA {PRM[PRO[PRC+1]]}")
+        if verbose: print(f"LDA {PRM[PRO[PRC+1]]}")
         return position + 2
 
     elif i == 0b0101: # wrt
         PRM[PRO[PRC+1]] = ACC
-        print(f"WRT {ACC}")
+        if verbose: print(f"WRT {PRM[PRO[PRC+1]]}")
         return position + 2
 
     elif i == 0b0110: # out
         OUT = PRM[PRO[PRC+1]]
-        print(f"OUT {PRM[PRO[PRC+1]]}")
+        if verbose: print(f"OUT {PRM[PRO[PRC+1]]}")
         return position + 2
 
     elif i == 0x07: # jmp
-        print(f"JMP {CIR}")
+        if verbose: print(f"JMP {CIR}")
         return CIR
     
     elif i == 0x08: # ldc
         CIR = PRM[PRO[PRC+1]]
-        print("LDC")
+        if verbose: print(f"LDC {PRM[PRO[PRC+1]]}")
         return position + 2
 
     elif i == 0b1111: # stp
-        print("STP")
+        if verbose: print("STP")
         return -1
 
-def run_program():
+def run_program(verbose:bool):
     global ACC
     global CIR
     global OUT
@@ -85,12 +87,12 @@ def run_program():
         if PRC == -1:
             print(OUT)
             break
-        PRC = instruction_set(PRO[PRC],PRC)
+        PRC = instruction_set(PRO[PRC],PRC, verbose)
         #print(PC)
 
 
 
     
 
-run_program()
+run_program(False)
 
